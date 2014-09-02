@@ -1,0 +1,93 @@
+library ieee; 
+use ieee.std_logic_1164.all; 
+use ieee.numeric_std.all; 
+use work.common_types.all;
+use ieee.math_real.all;
+
+entity MuxCompCl is 
+	port
+	(	
+		Clk: in std_logic;
+		CountClA: in std_logic_vector(CLCOUNT_SIZE-1 downto 0);
+		ClA: in std_logic_vector(CLASS_WIDTH-1 downto 0); 
+		CountClB: in std_logic_vector(CLCOUNT_SIZE-1 downto 0);
+		ClB: in std_logic_vector(CLASS_WIDTH-1 downto 0); 
+		MaxCountCl: out std_logic_vector(CLCOUNT_SIZE-1 downto 0);
+		MaxCl: out std_logic_vector(CLASS_WIDTH-1 downto 0)
+	);		
+end MuxCompCl;
+
+architecture Structural of MuxCompCl is 
+
+	Component PG is 
+		port
+		(	
+			A: in std_logic;
+			B: in std_logic;
+			P: out std_logic;
+			G: out std_logic		
+		);		
+	end Component;
+	
+	Component Prefix is 
+		port
+		(	
+			G2: in std_logic;
+			P2: in std_logic;
+			G1: in std_logic;
+			P1: in std_logic;
+			P: out std_logic;
+			G: out std_logic		
+		);		
+	end Component;
+	
+	signal InternalTreePxD: std_logic_vector(2*(CLCOUNT_SIZE-1) downto 0); 
+	signal InternalTreeGxD: std_logic_vector(2*(CLCOUNT_SIZE-1) downto 0); 
+	signal CountClAxD: std_logic_vector(CLCOUNT_SIZE-1 downto 0); 
+	signal CompOutxD: std_logic;
+	signal MaxCountClxD: std_logic_vector(CLCOUNT_SIZE-1 downto 0);
+	signal MaxClxD: std_logic_vector(CLASS_WIDTH-1 downto 0);
+	
+	begin
+		CountClAxD <= not(CountClA);
+		--generation of the first layer with the correct index for the leaf of the tree
+		GenPGLayer:
+			for i in 0 to CLCOUNT_SIZE-1 generate
+				PGGenFH:
+					if(i < (2*CLCOUNT_SIZE-2**INTEGER(ceil(log2(real(CLCOUNT_SIZE)))))) generate
+						PGBlockFH:
+							PG port map(CountClAxD(CLCOUNT_SIZE-1-i), CountClB(CLCOUNT_SIZE-1-i), InternalTreePxD(2**(INTEGER(ceil(log2(real(CLCOUNT_SIZE)))))-1+i), InternalTreeGxD(2**(INTEGER(ceil(log2(real(CLCOUNT_SIZE)))))-1+i));
+					end generate;
+				PGGenSH:
+					if(i >= (2*CLCOUNT_SIZE-2**INTEGER(ceil(log2(real(CLCOUNT_SIZE)))))) generate	
+					PGBlockSH:
+						PG port map(CountClAxD(CLCOUNT_SIZE-1-i), CountClB(CLCOUNT_SIZE-1-i), InternalTreePxD(2**(INTEGER(ceil(log2(real(CLCOUNT_SIZE)))))-1-CLCOUNT_SIZE+i), InternalTreeGxD(2**(INTEGER(ceil(log2(real(CLCOUNT_SIZE)))))-1-CLCOUNT_SIZE+i));
+					end generate;
+			end generate;
+			
+		--tree connection
+		TreeGenExt:
+			for h in 0 to INTEGER(ceil(log2(real(CLCOUNT_SIZE))))-1 generate
+				TreeGenInt:
+					for i in 0 to (2**h)-1 generate
+						NodeGen:
+							if((2**h + i) < CLCOUNT_SIZE) generate
+								PrefixGen:
+									Prefix port map(InternalTreeGxD(2*(2**(h)+(i))-1), InternalTreePxD(2*(2**(h)+(i))-1), InternalTreeGxD(2*(2**(h)+(i))),InternalTreePxD(2*(2**(h)+(i))), InternalTreePxD(2**(h)+(i-1)), InternalTreeGxD(2**(h)+(i-1)));
+							end generate;
+					end generate;
+			end generate;
+			
+		CompOutxD <= InternalTreePxD(0) nor InternalTreeGxD(0);
+		MaxCountClxD <= CountClA when (CompOutxD = '1') else CountClB;
+		MaxClxD <= ClA when (CompOutxD = '1') else ClB;
+		
+		process(Clk)
+		begin
+			if rising_edge (Clk) then
+				MaxCountCl <= MaxCountClxD;
+				MaxCl <= MaxClxD;
+			end if;
+		end process;
+		
+end Structural; 

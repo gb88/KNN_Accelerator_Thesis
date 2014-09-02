@@ -1,0 +1,75 @@
+/*
+ * hello.c
+ *
+ *  Created on: 7 mai 2012
+ *      Author: mpbraend
+ */
+
+#include "stdio.h"
+#include "system.h"
+#include "altera_avalon_pio_regs.h"
+#include <unistd.h>
+#include "fx2.h"
+
+int main()
+{
+	int i = 0;
+	fx2_struct usb_fx;
+	unsigned char ledvalue = 0;
+	long int addr = 0;
+	alt_u16 read = 0;
+	//printf("Hello\n");
+	int k = 0;
+	//initialize the SDRAM
+			//for (addr=0;addr<20;addr+=4)
+	IOWR_32DIRECT(SDRAM_0_BASE,0X000004,11);
+	while (1)
+	{
+		//if (i % 50 == 0)
+		//printf("%d \n", i);
+
+
+
+
+		// Set the LED output
+		ledvalue =  i;
+		IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, ledvalue);
+		while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+		IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0003);
+		//IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0000,(unsigned int) 0xF2F2);
+		for(k=0;k<256;k++)
+		{
+			//IOWR_32DIRECT(SDRAM_0_BASE, 0X000000,17);
+			//IOWR_32DIRECT(SDRAM_0_BASE, 0X000004,18);
+			while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+			IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0002);
+			IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0002);
+			while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+			//read = IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0000);
+			read = IORD_32DIRECT(SDRAM_0_BASE, 0X000004);
+
+			//write
+
+			IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0003);
+			while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+			IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0000,(unsigned int) read);
+			IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0001);
+			//IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0000,(unsigned int) 1);
+			//IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0001);
+			//IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0008,0x0003);
+			usleep(10000);
+		}
+
+	//	while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+		//IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0000,(unsigned int) 0x1234);
+	//	IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0005);
+
+		//fx2_write(&usb_fx, (int)FX2_EP4, (int) 0xFF);
+		//IOWR_ALTERA_AVALON_PIO_DATA(USBFIFOCTRL_0_BASE,usb_fx.data);
+		i++;
+
+		usleep(100);
+	}
+
+	return 0;
+}

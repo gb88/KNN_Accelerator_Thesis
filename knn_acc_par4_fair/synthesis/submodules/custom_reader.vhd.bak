@@ -1,0 +1,290 @@
+library ieee; 
+use ieee.std_logic_1164.all; 
+use ieee.numeric_std.all; 
+use ieee.std_logic_unsigned.all; 
+use ieee.math_real.all;
+ 
+entity custom_reader is 
+	port
+	(	
+	
+		-- Avalon master da sdoppiare per le 2 ram (data e class)
+		Clk,
+		reset_n		: in std_logic;
+		waitrequest : in std_logic;
+		chipselect	: out std_logic;
+		read			: out std_logic; 
+		write			: out std_logic;
+		address		: out std_logic_vector(15 downto 0);
+		readdata		: in std_logic_vector(31 downto 0);
+		writedata	: out std_logic_vector(31 downto 0);
+		waitrequest1 : in std_logic;
+		chipselect1	: out std_logic;
+		read1			: out std_logic; 
+		write1			: out std_logic;
+		address1		: out std_logic_vector(15 downto 0);
+		readdata1		: in std_logic_vector(31 downto 0);
+		writedata1	: out std_logic_vector(31 downto 0);
+		reset : in std_logic;
+		QAddress: in std_logic_vector(15 downto 0);
+		SkipAddr: in std_logic_vector(15 downto 0); --da portare a 8 bit
+		NDim: in std_logic_vector(7 downto 0);
+		NTr: in std_logic_vector(7 downto 0); --aumentare il numero di bit
+		Full: in std_logic;
+		EndTSetIn: in std_logic;
+		Go: in std_logic;
+		Drop: in std_logic;
+		EndComp: out std_logic;
+		Empty : out std_logic;
+		EndTSetOut: out std_logic;
+		dataout: out std_logic_vector(31 downto 0);
+		SumEn:	out std_logic;
+		SumReset: out std_logic;
+		Cl: out std_logic_vector(3 downto 0);
+		Q: out std_logic_vector(9 downto 0);
+		T: out std_logic_vector(9 downto 0)
+	);		
+end custom_reader;
+
+architecture Structural of custom_reader is 
+	type StateType is (S0,S1,SWAIT,SENDCOMP,WAITRESET,SWAITFULL);
+	signal NextStatexT: StateType; 
+	signal SubDim: std_logic_vector(9 downto 0);
+	signal TwoPower: std_logic_vector(19 downto 0); 
+	signal NDimCount: std_logic_vector(9 downto 0);
+	signal NTrCount: std_logic_vector(7 downto 0);
+	signal DataInPipexD: std_logic;
+	signal SumEnPipexD: std_logic_vector(1 downto 0);
+	signal AddressxD: std_logic_vector(15 downto 0);
+	signal Address1xD: std_logic_vector(15 downto 0);
+	signal NDimxD: std_logic_vector(7 downto 0);
+	signal CurrAddrxD: std_logic_vector(15 downto 0);
+	signal PosCountxD: std_logic_vector(2 downto 0);
+	begin
+	process(clk, reset_n, reset, QAddress)
+	begin
+		if(reset_n='0' or reset = '0')then
+			read<='0';
+			write<='0';
+			read1 <='0';
+			write1<='0';
+			DataInPipexD <= '0';
+			NextStatexT <= SWAIT;
+			NDimCount <= (others=>'0');
+			NTrCount	<= (others=>'0');
+			AddressxD <= (others=>'0');
+			Address1xD <= QAddress;
+			Empty <= '1';
+			EndComp <='0';
+			EndTSetOut <='0';
+			PosCountxD <= (others=>'0');
+		elsif(rising_edge(clk))then
+			write<='0';
+			write1<='0';
+			NextStatexT <= SWAIT;
+			case NextStatexT is
+				when SWAIT =>
+					Address1xD <= Address1xD;
+					EndTSetOut <='0';
+					Empty <= '1';
+					EndComp <='0';
+					if Full = '1' then
+						NTrCount	<= (others=>'0');
+						AddressxD <= (others=>'0');
+						NextStatexT <= S0;
+					else
+						NextStatexT <= SWAIT;
+					end if;
+				when S0 =>
+					Address1xD <= Address1xD;
+					EndTSetOut<='0';
+					EndComp <='0';
+					SumReset <= '1';
+					read <='1';
+					read1<='1';
+					if(waitrequest='1' or waitrequest1='1')then
+						NextStatexT <= S0;
+						DataInPipexD <= '0';
+					else
+						address <= AddressxD;
+						address1 <= Address1xD;
+						CurrAddrxD <= AddressxD;
+						AddressxD <= std_logic_vector(unsigned(AddressxD)+ 4);
+						Address1xD <= std_logic_vector(unsigned(Address1xD)+ 4);
+						NextStatexT <= S1;
+					end if;
+					Empty <= '0';
+					DataInPipexD <= '0';
+					NDimCount <= (others=>'0');
+					PosCountxD <= (others=>'0');
+					-- defaul byteneable
+					
+				when S1 =>
+					Address1xD <= Address1xD;
+					EndTSetOut <= '0';
+					EndComp <='0';
+					if(Drop ='1') then
+						SumReset <= '0';
+						if (NTrCount < NTr) then
+							NextStatexT <= S0;
+							Address1xD <= QAddress;
+							AddressxD <= std_logic_vector(unsigned(CurrAddrxD) + unsigned(SkipAddr));
+						elsif(NTrCount >= NTr) then
+							NextStatexT <= SWAITFULL;
+							Address1xD <= QAddress;
+							Empty <= '1';
+							if(EndTSetIn = '1')then
+								EndTSetOut <= EndTSetIn;
+								NextStatexT <= WAITRESET;
+							end if;
+						end if;
+					else
+						if(unsigned(NDimCount)=0) then
+							SumReset <= '0';
+						else
+							SumReset <='1';
+						end if;
+						--count until 4
+						if(unsigned(NDimCount)<unsigned(NDimxD)+1) then
+							read <='1';
+							if(waitrequest='1' or waitrequest1='1')then
+								NextStatexT <= S1;
+								DataInPipexD <= '0';
+								DataInPipexD <= '0';
+							else
+								if(unsigned(NDimCount)=0) then
+									PosCountxD <= (others=>'0');
+									Cl <= readdata(3 downto 0);
+									NDimCount <= std_logic_vector(unsigned(NDimCount)+ 1);
+									NTrCount <= std_logic_vector(unsigned(NTrCount)+ 1);
+									address <= AddressxD;
+									--address1 doesn't change
+									AddressxD <= std_logic_vector(unsigned(AddressxD)+ 4);
+									NextStatexT <= S1;
+								else
+								--in the next cycle the data are on the pipeline
+									DataInPipexD <= '1';
+									if(unsigned(PosCountxD) = 0) then
+										T <= readdata(9 downto 0);
+										Q <= readdata1(9 downto 0);
+										NDimCount <= std_logic_vector(unsigned(NDimCount)+ 1);
+										PosCountxD <= std_logic_vector(unsigned(PosCountxD)+ 1);
+									elsif(unsigned(PosCountxD) = 1) then
+										T <= readdata(19 downto 10);
+										Q <= readdata1(19 downto 10);
+										PosCountxD <= std_logic_vector(unsigned(PosCountxD)+ 1);
+										NDimCount <= std_logic_vector(unsigned(NDimCount)+ 1);
+									elsif(unsigned(PosCountxD) = 2) then
+										T <= readdata(29 downto 20);
+										Q <= readdata1(29 downto 20);
+										address <= AddressxD;
+										address1 <= Address1xD;
+										AddressxD <= std_logic_vector(unsigned(AddressxD)+ 4);
+										Address1xD <= std_logic_vector(unsigned(Address1xD)+ 4);
+										NDimCount <= std_logic_vector(unsigned(NDimCount)+ 1);
+										PosCountxD <= (others=>'0');
+									end if;
+									dataout<=readdata;								
+									NextStatexT <= S1;
+								end if;
+							end if;
+						elsif(unsigned(NDimCount)<unsigned(NDimxD)+7) then --11
+							DataInPipexD <= '0';
+							PosCountxD <= (others=>'0');
+							--esce la distanza giusta
+							NDimCount <= std_logic_vector(unsigned(NDimCount)+ 1);
+							NextStatexT <= S1;
+							--AddressxD <= (others=>'0');
+						else
+							NDimCount <= (others=>'0');
+							NextStatexT <= SENDCOMP;
+							AddressxD <= std_logic_vector(unsigned(AddressxD)- 4);
+							
+							EndComp <='1';
+						end if;
+					end if;
+				when SENDCOMP =>
+					EndTSetOut <= '0';
+					SumReset <= '1';
+					Address1xD <= QAddress;
+					AddressxD <= std_logic_vector(unsigned(CurrAddrxD) + unsigned(SkipAddr));
+					PosCountxD <= (others=>'0');
+					if(Drop ='1') then
+						EndComp <='0';
+						SumReset <= '0';
+						if (NTrCount < NTr) then
+							NextStatexT <= S0;
+						elsif(NTrCount >= NTr) then
+							NextStatexT <= SWAITFULL;
+							Empty <= '1';
+							if(EndTSetIn = '1')then
+								EndTSetOut <= EndTSetIn;
+								NextStatexT <= WAITRESET;
+							end if;
+						end if;
+					else
+						if (Go = '1' and NTrCount < NTr) then
+							NextStatexT <= S0;
+							SumReset <= '0';
+						elsif(Go = '1' and NTrCount >= NTr) then
+							NextStatexT <= SWAITFULL;
+							Empty <= '1';
+							SumReset <= '0';
+							if(EndTSetIn = '1')then
+								EndTSetOut <= EndTSetIn;
+								NextStatexT <= WAITRESET;
+							--else
+								--NextStatexT <= SWAITFULL;
+							end if;
+						else
+							NextStatexT <= SENDCOMP;
+						end if;
+					end if;
+				when WAITRESET =>
+					NTrCount <= (others=>'0');
+					Address1xD <= QAddress;
+					PosCountxD <= (others=>'1');
+					Empty <= '1';
+					SumReset <= '0';
+					EndComp <='0';
+					if(EndTSetIn = '1')then
+						EndTSetOut <= EndTSetIn;
+					end if;
+					NextStatexT <= WAITRESET;
+				when SWAITFULL =>
+				--aggiunto per provare il doppio riempimento
+					NTrCount <= (others=>'0');
+					Address1xD <= QAddress;
+					AddressxD <= (others=>'0');
+					PosCountxD <= (others=>'0');
+					SumReset <= '0';
+					Empty <= '1';
+					EndComp <='0';
+					if(EndTSetIn = '1')then
+						EndTSetOut <= EndTSetIn;
+						NextStatexT <= WAITRESET;
+					end if;
+					if(Full = '0') then
+						NextStatexT <= SWAIT; --SWAIT
+					else
+						NextStatexT <= SWAITFULL;
+					end if;
+				when others =>
+			end case;
+		end if;
+		--accout<=AccumulatorxD;
+	end process;
+	process(clk)
+	begin
+		if(rising_edge(clk)) then
+		if(unsigned(NDimCount)=0) then
+				SumEnPipexD <= (others=>'0');
+				SumEn <= '0';
+			else
+				SumEnPipexD<= SumEnPipexD(0 downto 0) & DataInPipexD;
+				SumEn <= SumEnPipexD(1);
+			end if;			
+		end if;
+	end process;
+	NDimxD<=NDim;
+end Structural;

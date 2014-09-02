@@ -1,0 +1,323 @@
+Info: Starting: Create block symbol file (.bsf)
+Info: ip-generate --project-directory=C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/ --output-directory=C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/ --report-file=bsf:C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/nios_sys.bsf --system-info=DEVICE_FAMILY="Cyclone II" --system-info=DEVICE=EP2C20F484C8 --system-info=DEVICE_SPEEDGRADE=8 --component-file=C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/nios_sys.qsys
+Progress: Loading knn_acc_par1/nios_sys.qsys
+Progress: Reading input file
+Progress: Adding clk_0 [clock_source 12.1]
+Progress: Parameterizing module clk_0
+Progress: Adding onchip_memory2_0 [altera_avalon_onchip_memory2 12.1]
+Progress: Parameterizing module onchip_memory2_0
+Progress: Adding jtag_uart_0 [altera_avalon_jtag_uart 12.1]
+Progress: Parameterizing module jtag_uart_0
+Progress: Adding pio_0 [altera_avalon_pio 12.1]
+Progress: Parameterizing module pio_0
+Progress: Adding usbFIFOCtrl_0 [usbFIFOCtrl 1.0]
+Progress: Parameterizing module usbFIFOCtrl_0
+Progress: Adding sdram_controller [altera_avalon_new_sdram_controller 12.1]
+Progress: Parameterizing module sdram_controller
+Progress: Adding cpu_0 [altera_nios2_qsys 12.1]
+Progress: Parameterizing module cpu_0
+Progress: Adding altpll_0 [altpll 12.1]
+Progress: Parameterizing module altpll_0
+Progress: Adding performance_counter_0 [altera_avalon_performance_counter 12.1]
+Progress: Parameterizing module performance_counter_0
+Progress: Adding dma [altera_avalon_dma 12.1]
+Progress: Parameterizing module dma
+Progress: Adding cache_0 [altera_avalon_onchip_memory2 12.1]
+Progress: Parameterizing module cache_0
+Progress: Adding distancecore_0 [distancecore 1.0]
+Progress: Parameterizing module distancecore_0
+Progress: Adding NDimReg [NDimReg 1.0]
+Progress: Parameterizing module NDimReg
+Progress: Adding knnclasscore [knnclass 1.0]
+Progress: Parameterizing module knnclasscore
+Progress: Adding EndTSetReg_0 [endtsetreg 1.0]
+Progress: Parameterizing module EndTSetReg_0
+Progress: Adding FullReg_0 [fullreg 1.0]
+Progress: Parameterizing module FullReg_0
+Progress: Adding NTrReg_0 [ntrreg 1.0]
+Progress: Parameterizing module NTrReg_0
+Progress: Adding emptyreg_0 [emptyreg 1.0]
+Progress: Parameterizing module emptyreg_0
+Progress: Adding baseqaddr_0 [baseqaddr 1.0]
+Progress: Parameterizing module baseqaddr_0
+Progress: Adding skipaddrreg_0 [skipaddrreg 1.0]
+Progress: Parameterizing module skipaddrreg_0
+Progress: Adding altpll_1 [altpll 12.1]
+Progress: Parameterizing module altpll_1
+Progress: Adding clk_1 [clock_source 12.1]
+Progress: Parameterizing module clk_1
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: nios_sys.onchip_memory2_0: Memory will be initialized from onchip_memory2_0.hex
+Warning: nios_sys.cpu_0: No Debugger.  You will not be able to download or debug programs
+Warning: nios_sys.cache_0: This memory is not initialized during device programming.
+Warning: nios_sys.distancecore_0: Port dist conflicts with a VHDL, verilog or system verilog reserved word
+Warning: nios_sys.altpll_0: altpll_0.pll_slave must be connected to an Avalon-MM master
+Warning: nios_sys.altpll_1: altpll_1.pll_slave must be connected to an Avalon-MM master
+Warning: nios_sys.altpll_0: altpll_0.areset_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_0: altpll_0.locked_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_0: altpll_0.phasedone_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.NDimReg: NDimReg.NDim1 must be exported, or connected to a matching conduit.
+Warning: nios_sys.NDimReg: NDimReg.NDim2 must be exported, or connected to a matching conduit.
+Warning: nios_sys.NDimReg: NDimReg.NDim3 must be exported, or connected to a matching conduit.
+Warning: nios_sys.knnclasscore: knnclasscore.Go1 must be exported, or connected to a matching conduit.
+Warning: nios_sys.knnclasscore: knnclasscore.Cl1 must be exported, or connected to a matching conduit.
+Warning: nios_sys.baseqaddr_0: baseqaddr_0.QAddress1 must be exported, or connected to a matching conduit.
+Warning: nios_sys.skipaddrreg_0: skipaddrreg_0.SkipAddr1 must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_1: altpll_1.areset_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_1: altpll_1.c2_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_1: altpll_1.c1_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_1: altpll_1.locked_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_1: altpll_1.phasedone_conduit must be exported, or connected to a matching conduit.
+Info: ip-generate succeeded.
+Info: Finished: Create block symbol file (.bsf)
+Info: 
+Info: Starting: Create HDL design files for synthesis
+Info: ip-generate --project-directory=C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/ --output-directory=C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/synthesis/ --file-set=QUARTUS_SYNTH --report-file=sopcinfo:C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/nios_sys.sopcinfo --report-file=html:C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/nios_sys.html --report-file=qip:C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/synthesis/nios_sys.qip --report-file=cmp:C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/nios_sys.cmp --system-info=DEVICE_FAMILY="Cyclone II" --system-info=DEVICE=EP2C20F484C8 --system-info=DEVICE_SPEEDGRADE=8 --component-file=C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/nios_sys.qsys
+Progress: Loading knn_acc_par1/nios_sys.qsys
+Progress: Reading input file
+Progress: Adding clk_0 [clock_source 12.1]
+Progress: Parameterizing module clk_0
+Progress: Adding onchip_memory2_0 [altera_avalon_onchip_memory2 12.1]
+Progress: Parameterizing module onchip_memory2_0
+Progress: Adding jtag_uart_0 [altera_avalon_jtag_uart 12.1]
+Progress: Parameterizing module jtag_uart_0
+Progress: Adding pio_0 [altera_avalon_pio 12.1]
+Progress: Parameterizing module pio_0
+Progress: Adding usbFIFOCtrl_0 [usbFIFOCtrl 1.0]
+Progress: Parameterizing module usbFIFOCtrl_0
+Progress: Adding sdram_controller [altera_avalon_new_sdram_controller 12.1]
+Progress: Parameterizing module sdram_controller
+Progress: Adding cpu_0 [altera_nios2_qsys 12.1]
+Progress: Parameterizing module cpu_0
+Progress: Adding altpll_0 [altpll 12.1]
+Progress: Parameterizing module altpll_0
+Progress: Adding performance_counter_0 [altera_avalon_performance_counter 12.1]
+Progress: Parameterizing module performance_counter_0
+Progress: Adding dma [altera_avalon_dma 12.1]
+Progress: Parameterizing module dma
+Progress: Adding cache_0 [altera_avalon_onchip_memory2 12.1]
+Progress: Parameterizing module cache_0
+Progress: Adding distancecore_0 [distancecore 1.0]
+Progress: Parameterizing module distancecore_0
+Progress: Adding NDimReg [NDimReg 1.0]
+Progress: Parameterizing module NDimReg
+Progress: Adding knnclasscore [knnclass 1.0]
+Progress: Parameterizing module knnclasscore
+Progress: Adding EndTSetReg_0 [endtsetreg 1.0]
+Progress: Parameterizing module EndTSetReg_0
+Progress: Adding FullReg_0 [fullreg 1.0]
+Progress: Parameterizing module FullReg_0
+Progress: Adding NTrReg_0 [ntrreg 1.0]
+Progress: Parameterizing module NTrReg_0
+Progress: Adding emptyreg_0 [emptyreg 1.0]
+Progress: Parameterizing module emptyreg_0
+Progress: Adding baseqaddr_0 [baseqaddr 1.0]
+Progress: Parameterizing module baseqaddr_0
+Progress: Adding skipaddrreg_0 [skipaddrreg 1.0]
+Progress: Parameterizing module skipaddrreg_0
+Progress: Adding altpll_1 [altpll 12.1]
+Progress: Parameterizing module altpll_1
+Progress: Adding clk_1 [clock_source 12.1]
+Progress: Parameterizing module clk_1
+Progress: Building connections
+Progress: Parameterizing connections
+Progress: Validating
+Progress: Done reading input file
+Info: nios_sys.onchip_memory2_0: Memory will be initialized from onchip_memory2_0.hex
+Warning: nios_sys.cpu_0: No Debugger.  You will not be able to download or debug programs
+Warning: nios_sys.cache_0: This memory is not initialized during device programming.
+Warning: nios_sys.distancecore_0: Port dist conflicts with a VHDL, verilog or system verilog reserved word
+Warning: nios_sys.altpll_0: altpll_0.pll_slave must be connected to an Avalon-MM master
+Warning: nios_sys.altpll_1: altpll_1.pll_slave must be connected to an Avalon-MM master
+Warning: nios_sys.altpll_0: altpll_0.areset_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_0: altpll_0.locked_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_0: altpll_0.phasedone_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.NDimReg: NDimReg.NDim1 must be exported, or connected to a matching conduit.
+Warning: nios_sys.NDimReg: NDimReg.NDim2 must be exported, or connected to a matching conduit.
+Warning: nios_sys.NDimReg: NDimReg.NDim3 must be exported, or connected to a matching conduit.
+Warning: nios_sys.knnclasscore: knnclasscore.Go1 must be exported, or connected to a matching conduit.
+Warning: nios_sys.knnclasscore: knnclasscore.Cl1 must be exported, or connected to a matching conduit.
+Warning: nios_sys.baseqaddr_0: baseqaddr_0.QAddress1 must be exported, or connected to a matching conduit.
+Warning: nios_sys.skipaddrreg_0: skipaddrreg_0.SkipAddr1 must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_1: altpll_1.areset_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_1: altpll_1.c2_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_1: altpll_1.c1_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_1: altpll_1.locked_conduit must be exported, or connected to a matching conduit.
+Warning: nios_sys.altpll_1: altpll_1.phasedone_conduit must be exported, or connected to a matching conduit.
+Info: nios_sys: Generating nios_sys "nios_sys" for QUARTUS_SYNTH
+Info: pipeline_bridge_swap_transform: After transform: 22 modules, 80 connections
+Info: No custom instruction connections, skipping transform 
+Info: merlin_translator_transform: After transform: 45 modules, 149 connections
+Info: merlin_domain_transform: After transform: 99 modules, 407 connections
+Info: merlin_router_transform: After transform: 122 modules, 476 connections
+Info: merlin_burst_transform: After transform: 123 modules, 479 connections
+Info: reset_adaptation_transform: After transform: 128 modules, 489 connections
+Info: merlin_network_to_switch_transform: After transform: 171 modules, 577 connections
+Info: merlin_width_transform: After transform: 173 modules, 583 connections
+Info: Inserting clock-crossing logic between cmd_xbar_demux_001.src4 and cmd_xbar_mux_004.sink0
+Info: Inserting clock-crossing logic between cmd_xbar_demux_001.src7 and cmd_xbar_mux_007.sink0
+Info: Inserting clock-crossing logic between cmd_xbar_demux_001.src8 and cmd_xbar_mux_008.sink0
+Info: Inserting clock-crossing logic between cmd_xbar_demux_001.src9 and cmd_xbar_mux_009.sink0
+Info: Inserting clock-crossing logic between cmd_xbar_demux_001.src10 and cmd_xbar_mux_010.sink0
+Info: Inserting clock-crossing logic between cmd_xbar_demux_001.src11 and cmd_xbar_mux_011.sink0
+Info: Inserting clock-crossing logic between cmd_xbar_demux_001.src12 and cmd_xbar_mux_012.sink0
+Info: Inserting clock-crossing logic between cmd_xbar_demux_001.src13 and cmd_xbar_mux_013.sink0
+Info: Inserting clock-crossing logic between cmd_xbar_demux_001.src14 and cmd_xbar_mux_014.sink0
+Info: Inserting clock-crossing logic between rsp_xbar_demux_004.src0 and rsp_xbar_mux_001.sink4
+Info: Inserting clock-crossing logic between rsp_xbar_demux_007.src0 and rsp_xbar_mux_001.sink7
+Info: Inserting clock-crossing logic between rsp_xbar_demux_008.src0 and rsp_xbar_mux_001.sink8
+Info: Inserting clock-crossing logic between rsp_xbar_demux_009.src0 and rsp_xbar_mux_001.sink9
+Info: Inserting clock-crossing logic between rsp_xbar_demux_010.src0 and rsp_xbar_mux_001.sink10
+Info: Inserting clock-crossing logic between rsp_xbar_demux_011.src0 and rsp_xbar_mux_001.sink11
+Info: Inserting clock-crossing logic between rsp_xbar_demux_012.src0 and rsp_xbar_mux_001.sink12
+Info: Inserting clock-crossing logic between rsp_xbar_demux_013.src0 and rsp_xbar_mux_001.sink13
+Info: Inserting clock-crossing logic between rsp_xbar_demux_014.src0 and rsp_xbar_mux_001.sink14
+Info: Inserting clock-crossing logic between cmd_xbar_demux_004.src0 and cmd_xbar_mux_015.sink1
+Info: Inserting clock-crossing logic between rsp_xbar_demux_015.src1 and rsp_xbar_mux_004.sink0
+Info: Inserting clock-crossing logic between cmd_xbar_demux_005.src0 and cmd_xbar_mux_016.sink0
+Info: Inserting clock-crossing logic between rsp_xbar_demux_016.src0 and rsp_xbar_mux_005.sink0
+Info: com_altera_sopcmodel_transforms_avalon_ClockCrossingTransform: After transform: 195 modules, 693 connections
+Info: merlin_interrupt_mapper_transform: After transform: 196 modules, 696 connections
+Info: Starting classic module elaboration.
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0002_sopclgen  --no_splash --refresh C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0002_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+Info: Finished elaborating classic module.
+Executing: C:/altera/12.1/quartus//sopc_builder/bin/sopc_builder --classic --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0002_sopclgen/yysystem.ptf
+Info: Running sopc_builder...
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0002_sopclgen  --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0002_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+No .sopc_builder configuration file(!)
+.
+# 2014.07.10 22:12:16 (*) Success: sopc_builder finished.
+Info: onchip_memory2_0: "nios_sys" instantiated altera_avalon_onchip_memory2 "onchip_memory2_0"
+Info: Starting classic module elaboration.
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0003_sopclgen  --no_splash --refresh C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0003_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+Info: Finished elaborating classic module.
+Executing: C:/altera/12.1/quartus//sopc_builder/bin/sopc_builder --classic --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0003_sopclgen/yysystem.ptf
+Info: Running sopc_builder...
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0003_sopclgen  --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0003_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+No .sopc_builder configuration file(!)
+.
+# 2014.07.10 22:12:22 (*) Success: sopc_builder finished.
+Info: jtag_uart_0: "nios_sys" instantiated altera_avalon_jtag_uart "jtag_uart_0"
+Info: Starting classic module elaboration.
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0004_sopclgen  --no_splash --refresh C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0004_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+Info: Finished elaborating classic module.
+Executing: C:/altera/12.1/quartus//sopc_builder/bin/sopc_builder --classic --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0004_sopclgen/yysystem.ptf
+Info: Running sopc_builder...
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0004_sopclgen  --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0004_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+No .sopc_builder configuration file(!)
+.
+# 2014.07.10 22:12:28 (*) Success: sopc_builder finished.
+Info: pio_0: "nios_sys" instantiated altera_avalon_pio "pio_0"
+Info: usbFIFOCtrl_0: "nios_sys" instantiated usbFIFOCtrl "usbFIFOCtrl_0"
+Info: Starting classic module elaboration.
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0006_sopclgen  --no_splash --refresh C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0006_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+Info: Finished elaborating classic module.
+Executing: C:/altera/12.1/quartus//sopc_builder/bin/sopc_builder --classic --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0006_sopclgen/yysystem.ptf
+Info: Running sopc_builder...
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0006_sopclgen  --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0006_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+No .sopc_builder configuration file(!)
+.
+.
+# 2014.07.10 22:12:34 (*) Running Test Generator Program for nios_sys_sdram_controller
+# 2014.07.10 22:12:35 (*) Success: sopc_builder finished.
+Info: sdram_controller: "nios_sys" instantiated altera_avalon_new_sdram_controller "sdram_controller"
+Info: cpu_0: Starting RTL generation for module 'nios_sys_cpu_0'
+Info: cpu_0:   Generation command is [exec C:/altera/12.1/quartus/../ip/altera/nios2_ip/altera_nios2/eperl.exe -I C:/altera/12.1/quartus/common/ip/altera/common/perl/5.8.3 -I C:/altera/12.1/quartus/sopc_builder/bin/europa -I C:/altera/12.1/quartus/sopc_builder/bin/perl_lib -I C:/altera/12.1/quartus/sopc_builder/bin -I C:/altera/12.1/quartus/../ip/altera/nios2_ip/altera_nios2/cpu_lib -I C:/altera/12.1/quartus/../ip/altera/nios2_ip/altera_nios2/nios_lib -I C:/altera/12.1/quartus/../ip/altera/nios2_ip/altera_nios2 -I C:/altera/12.1/quartus/../ip/altera/nios2_ip/altera_nios2 -- C:/altera/12.1/quartus/../ip/altera/nios2_ip/altera_nios2/generate_rtl.epl --name=nios_sys_cpu_0 --dir=C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0007_cpu_0_gen/ --quartus_dir=C:/altera/12.1/quartus --verilog --config=C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0007_cpu_0_gen//nios_sys_cpu_0_processor_configuration.pl  --do_build_sim=0    --bogus  ]
+Info: cpu_0: # 2014.07.10 22:12:36 (*) Starting Nios II generation
+Info: cpu_0: # 2014.07.10 22:12:36 (*)   Checking for plaintext license.
+Info: cpu_0: # 2014.07.10 22:12:36 (*)   Couldn't query license setup in Quartus directory C:/altera/12.1/quartus
+Info: cpu_0: # 2014.07.10 22:12:36 (*)   Defaulting to contents of LM_LICENSE_FILE environment variable
+Info: cpu_0: # 2014.07.10 22:12:36 (*)   LM_LICENSE_FILE environment variable is empty
+Info: cpu_0: # 2014.07.10 22:12:36 (*)   Plaintext license not found.
+Info: cpu_0: # 2014.07.10 22:12:36 (*)   No license required to generate encrypted Nios II/e.
+Info: cpu_0: # 2014.07.10 22:12:36 (*)   Elaborating CPU configuration settings
+Info: cpu_0: # 2014.07.10 22:12:36 (*)   Creating all objects for CPU
+Info: cpu_0: # 2014.07.10 22:12:37 (*)   Generating RTL from CPU objects
+Info: cpu_0: # 2014.07.10 22:12:37 (*)   Creating plain-text RTL
+Info: cpu_0: # 2014.07.10 22:12:37 (*) Done Nios II generation
+Info: cpu_0: Done RTL generation for module 'nios_sys_cpu_0'
+Info: cpu_0: "nios_sys" instantiated altera_nios2_qsys "cpu_0"
+Info: altpll_0: "nios_sys" instantiated altpll "altpll_0"
+Info: Starting classic module elaboration.
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0010_sopclgen  --no_splash --refresh C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0010_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+Info: Finished elaborating classic module.
+Executing: C:/altera/12.1/quartus//sopc_builder/bin/sopc_builder --classic --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0010_sopclgen/yysystem.ptf
+Info: Running sopc_builder...
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0010_sopclgen  --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0010_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+No .sopc_builder configuration file(!)
+.
+# 2014.07.10 22:12:43 (*) Success: sopc_builder finished.
+Info: performance_counter_0: "nios_sys" instantiated altera_avalon_performance_counter "performance_counter_0"
+Info: Starting classic module elaboration.
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0011_sopclgen  --no_splash --refresh C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0011_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+Info: Finished elaborating classic module.
+Executing: C:/altera/12.1/quartus//sopc_builder/bin/sopc_builder --classic --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0011_sopclgen/yysystem.ptf
+Info: Running sopc_builder...
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0011_sopclgen  --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0011_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+No .sopc_builder configuration file(!)
+.
+# 2014.07.10 22:12:48 (*)   nios_sys_dma: allowing these transactions: word, byte_access
+# 2014.07.10 22:12:50 (*) Success: sopc_builder finished.
+Info: dma: "nios_sys" instantiated altera_avalon_dma "dma"
+Info: Starting classic module elaboration.
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0012_sopclgen  --no_splash --refresh C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0012_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+Info: Finished elaborating classic module.
+Executing: C:/altera/12.1/quartus//sopc_builder/bin/sopc_builder --classic --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0012_sopclgen/yysystem.ptf
+Info: Running sopc_builder...
+"c:/altera/12.1/quartus/bin/jre/bin/java.exe" -Xmx512M -classpath "c:/altera/12.1/quartus/sopc_builder/bin/sopc_builder.jar;c:/altera/12.1/quartus/sopc_builder/bin/PinAssigner.jar;c:/altera/12.1/quartus/sopc_builder/bin/sopc_wizard.jar;c:/altera/12.1/quartus/sopc_builder/bin/jptf.jar" sopc_builder.sopc_builder  -d"c:/altera/12.1/quartus/sopc_builder" -notalkback=1 -projectnameyysystem.qpf -projectpathC:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0012_sopclgen  --generate C:/Users/Giovanni/AppData/Local/Temp/alt6261_2055127645620368881.dir/0012_sopclgen/yysystem.v --quartus_dir="c:/altera/12.1/quartus" --sopc_perl="c:/altera/12.1/quartus/bin/perl" --sopc_lib_path="++c:/altera/12.1/quartus/../ip/altera/sopc_builder_ip+c:/altera/12.1/quartus/../ip/altera/nios2_ip"
+No .sopc_builder configuration file(!)
+..
+# 2014.07.10 22:12:57 (*) Success: sopc_builder finished.
+Info: cache_0: "nios_sys" instantiated altera_avalon_onchip_memory2 "cache_0"
+Info: distancecore_0: "nios_sys" instantiated distancecore "distancecore_0"
+Info: NDimReg: "nios_sys" instantiated NDimReg "NDimReg"
+Info: knnclasscore: "nios_sys" instantiated knnclass "knnclasscore"
+Info: EndTSetReg_0: "nios_sys" instantiated endtsetreg "EndTSetReg_0"
+Info: FullReg_0: "nios_sys" instantiated fullreg "FullReg_0"
+Info: NTrReg_0: "nios_sys" instantiated ntrreg "NTrReg_0"
+Info: emptyreg_0: "nios_sys" instantiated emptyreg "emptyreg_0"
+Info: baseqaddr_0: "nios_sys" instantiated baseqaddr "baseqaddr_0"
+Info: skipaddrreg_0: "nios_sys" instantiated skipaddrreg "skipaddrreg_0"
+Info: altpll_1: "nios_sys" instantiated altpll "altpll_1"
+Info: cpu_0_instruction_master_translator: "nios_sys" instantiated altera_merlin_master_translator "cpu_0_instruction_master_translator"
+Info: onchip_memory2_0_s1_translator: "nios_sys" instantiated altera_merlin_slave_translator "onchip_memory2_0_s1_translator"
+Info: cpu_0_instruction_master_translator_avalon_universal_master_0_agent: "nios_sys" instantiated altera_merlin_master_agent "cpu_0_instruction_master_translator_avalon_universal_master_0_agent"
+Info: onchip_memory2_0_s1_translator_avalon_universal_slave_0_agent: "nios_sys" instantiated altera_merlin_slave_agent "onchip_memory2_0_s1_translator_avalon_universal_slave_0_agent"
+Info: onchip_memory2_0_s1_translator_avalon_universal_slave_0_agent_rsp_fifo: "nios_sys" instantiated altera_avalon_sc_fifo "onchip_memory2_0_s1_translator_avalon_universal_slave_0_agent_rsp_fifo"
+Info: addr_router: "nios_sys" instantiated altera_merlin_router "addr_router"
+Info: addr_router_001: "nios_sys" instantiated altera_merlin_router "addr_router_001"
+Info: addr_router_002: "nios_sys" instantiated altera_merlin_router "addr_router_002"
+Info: id_router: "nios_sys" instantiated altera_merlin_router "id_router"
+Info: id_router_002: "nios_sys" instantiated altera_merlin_router "id_router_002"
+Info: id_router_004: "nios_sys" instantiated altera_merlin_router "id_router_004"
+Info: id_router_005: "nios_sys" instantiated altera_merlin_router "id_router_005"
+Info: addr_router_003: "nios_sys" instantiated altera_merlin_router "addr_router_003"
+Info: id_router_015: "nios_sys" instantiated altera_merlin_router "id_router_015"
+Info: addr_router_005: "nios_sys" instantiated altera_merlin_router "addr_router_005"
+Info: id_router_016: "nios_sys" instantiated altera_merlin_router "id_router_016"
+Info: burst_adapter: "nios_sys" instantiated altera_merlin_burst_adapter "burst_adapter"
+Info: rst_controller: "nios_sys" instantiated altera_reset_controller "rst_controller"
+Info: cmd_xbar_demux: "nios_sys" instantiated altera_merlin_demultiplexer "cmd_xbar_demux"
+Info: cmd_xbar_demux_001: "nios_sys" instantiated altera_merlin_demultiplexer "cmd_xbar_demux_001"
+Info: cmd_xbar_demux_002: "nios_sys" instantiated altera_merlin_demultiplexer "cmd_xbar_demux_002"
+Info: cmd_xbar_mux: "nios_sys" instantiated altera_merlin_multiplexer "cmd_xbar_mux"
+Info: rsp_xbar_mux: "nios_sys" instantiated altera_merlin_multiplexer "rsp_xbar_mux"
+Info: Reusing file C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_xbar_mux_001: "nios_sys" instantiated altera_merlin_multiplexer "rsp_xbar_mux_001"
+Info: Reusing file C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: cmd_xbar_demux_003: "nios_sys" instantiated altera_merlin_demultiplexer "cmd_xbar_demux_003"
+Info: cmd_xbar_mux_015: "nios_sys" instantiated altera_merlin_multiplexer "cmd_xbar_mux_015"
+Info: Reusing file C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/synthesis/submodules/altera_merlin_arbitrator.sv
+Info: rsp_xbar_demux_015: "nios_sys" instantiated altera_merlin_demultiplexer "rsp_xbar_demux_015"
+Info: cmd_xbar_demux_005: "nios_sys" instantiated altera_merlin_demultiplexer "cmd_xbar_demux_005"
+Info: width_adapter: "nios_sys" instantiated altera_merlin_width_adapter "width_adapter"
+Info: Reusing file C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/synthesis/submodules/altera_merlin_burst_uncompressor.sv
+Info: Reusing file C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par1/synthesis/submodules/altera_merlin_address_alignment.sv
+Info: crosser: "nios_sys" instantiated altera_avalon_st_handshake_clock_crosser "crosser"
+Info: irq_mapper: "nios_sys" instantiated altera_irq_mapper "irq_mapper"
+Info: nios_sys: Done nios_sys" with 52 modules, 263 files, 4152105 bytes
+Info: ip-generate succeeded.
+Info: Finished: Create HDL design files for synthesis

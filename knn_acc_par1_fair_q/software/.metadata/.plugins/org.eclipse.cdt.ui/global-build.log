@@ -1,0 +1,26 @@
+
+**** Build of configuration Nios II for project aca_hello ****
+
+make mem_init_generate 
+makefile:736: warning: overriding commands for target `obj/.metadata/.plugins/org.eclipse.cdt.make.core/specs.o'
+makefile:733: warning: ignoring old commands for target `obj/.metadata/.plugins/org.eclipse.cdt.make.core/specs.o'
+Info: Building ../aca_hello_bsp/
+make --no-print-directory -C ../aca_hello_bsp/
+[BSP build complete]
+Post-processing to create mem_init/nios_sys_onchip_memory2_0.hex...
+bash -c 'elf2hex aca_hello.elf 0x02004000 0x020068ff --width=32 \
+		--little-endian-mem --create-lanes=0  mem_init/nios_sys_onchip_memory2_0.hex'
+Post-processing to create mem_init/hdl_sim/nios_sys_onchip_memory2_0.dat...
+bash -c 'elf2dat --infile=aca_hello.elf --outfile=mem_init/hdl_sim/nios_sys_onchip_memory2_0.dat \
+		--base=0x02004000 --end=0x020068ff --width=32 \
+		--little-endian-mem --create-lanes=0 '
+Post-processing to create mem_init/hdl_sim/sdram_controller.dat...
+bash -c 'elf2dat --infile=aca_hello.elf --outfile=mem_init/hdl_sim/sdram_controller.dat \
+		--base=0x00000000 --end=0x01ffffff --width=32 \
+		--little-endian-mem --create-lanes=0 '
+Post-processing to create mem_init/hdl_sim/nios_sys_onchip_memory2_0.sym...
+nios2-elf-nm -n aca_hello.elf > mem_init/hdl_sim/nios_sys_onchip_memory2_0.sym
+Post-processing to create mem_init/hdl_sim/sdram_controller.sym...
+nios2-elf-nm -n aca_hello.elf > mem_init/hdl_sim/sdram_controller.sym
+
+**** Build Finished ****

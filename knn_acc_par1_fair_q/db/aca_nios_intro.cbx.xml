@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<LOG_ROOT>
+	<PROJECT NAME="aca_nios_intro">
+		<CBX_INST_ENTRY INSTANCE_NAME="|nios_sys|nios_sys_cpu_0:cpu_0|nios_sys_cpu_0_register_bank_b_module:nios_sys_cpu_0_register_bank_b|altsyncram:the_altsyncram" CBX_FILE_NAME="altsyncram_m9g1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|nios_sys|distancecore:distancecore_0|EucDis:c_1|TwoPower:TwoPowerBlk|lpm_mult:Mult0" CBX_FILE_NAME="mult_31t.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|nios_sys|nios_sys_cache_0:cache_0|altsyncram:the_altsyncram" CBX_FILE_NAME="altsyncram_i8v1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|nios_sys|nios_sys_dma:dma|nios_sys_dma_fifo_module:the_nios_sys_dma_fifo_module|nios_sys_dma_fifo_module_fifo_ram_module:nios_sys_dma_fifo_module_fifo_ram|lpm_ram_dp:lpm_ram_dp_component|altdpram:sram|lpm_decode:wdecoder" CBX_FILE_NAME="decode_uqf.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|nios_sys|nios_sys_jtag_uart_0:jtag_uart_0|nios_sys_jtag_uart_0_scfifo_r:the_nios_sys_jtag_uart_0_scfifo_r|scfifo:rfifo" CBX_FILE_NAME="scfifo_1n21.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|nios_sys|nios_sys_onchip_memory2_0:onchip_memory2_0|altsyncram:the_altsyncram" CBX_FILE_NAME="altsyncram_l2d1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|nios_sys|nios_sys_cpu_0:cpu_0|nios_sys_cpu_0_register_bank_a_module:nios_sys_cpu_0_register_bank_a|altsyncram:the_altsyncram" CBX_FILE_NAME="altsyncram_l9g1.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|nios_sys|nios_sys_dma:dma|nios_sys_dma_fifo_module:the_nios_sys_dma_fifo_module|nios_sys_dma_fifo_module_fifo_ram_module:nios_sys_dma_fifo_module_fifo_ram|lpm_ram_dp:lpm_ram_dp_component|altdpram:sram|lpm_mux:mux" CBX_FILE_NAME="mux_coc.tdf"/>
+		<CBX_INST_ENTRY INSTANCE_NAME="|nios_sys|nios_sys_jtag_uart_0:jtag_uart_0|nios_sys_jtag_uart_0_scfifo_w:the_nios_sys_jtag_uart_0_scfifo_w|scfifo:wfifo" CBX_FILE_NAME="scfifo_1n21.tdf"/>
+	</PROJECT>
+</LOG_ROOT>

@@ -1,0 +1,35 @@
+
+**** Build of configuration Nios II for project aca_hello ****
+
+make mem_init_generate 
+makefile:736: warning: overriding commands for target `obj/.metadata/.plugins/org.eclipse.cdt.make.core/specs.o'
+makefile:733: warning: ignoring old commands for target `obj/.metadata/.plugins/org.eclipse.cdt.make.core/specs.o'
+Info: Compiling hello.c to obj/hello.o
+nios2-elf-gcc -xc -MP -MMD -c -I../aca_hello_bsp//HAL/inc -I../aca_hello_bsp/ -I../aca_hello_bsp//drivers/inc  -DSYSTEM_BUS_WIDTH=32 -pipe -D__hal__ -DALT_NO_C_PLUS_PLUS -DALT_NO_CLEAN_EXIT -DALT_NO_EXIT -DALT_USE_DIRECT_DRIVERS -DALT_NO_INSTRUCTION_EMULATION -DALT_USE_SMALL_DRIVERS -DSMALL_C_LIB -DALT_SINGLE_THREADED    -O3 -g -Wall   -EL -mno-hw-div -mno-hw-mul -mno-hw-mulx  -o obj/hello.o hello.c
+hello.c: In function 'main':
+hello.c:404: warning: passing argument 1 of 'perf_get_section_time' makes pointer from integer without a cast
+Info: Building ../aca_hello_bsp/
+make --no-print-directory -C ../aca_hello_bsp/
+[BSP build complete]
+Info: Linking aca_hello.elf
+nios2-elf-g++  -T'../aca_hello_bsp//linker.x' -msys-crt0='../aca_hello_bsp//obj/HAL/src/crt0.o' -msys-lib=hal_bsp -L../aca_hello_bsp/  -Wl,--defsym,exit=_exit -msmallc  -Wl,-Map=aca_hello.map   -O3 -g -Wall   -EL -mno-hw-div -mno-hw-mul -mno-hw-mulx  -o aca_hello.elf obj/.metadata/.plugins/org.eclipse.cdt.make.core/specs.o obj/fx2.o obj/hello.o obj/.metadata/.plugins/org.eclipse.cdt.make.core/specs.o -lm 
+nios2-elf-insert aca_hello.elf --thread_model hal --cpu_name cpu_0 --qsys true --simulation_enabled false --stderr_dev none --stdin_dev none --stdout_dev none --sopc_system_name nios_sys --jdi C:/Users/Giovanni/Desktop/tesi_pulita/knn_acc_par4/software/aca_hello_bsp/../../aca_nios_intro.jdi
+Info: (aca_hello.elf) 8696 Bytes program size (code + initialized data).
+Info:                 1800 Bytes free for stack + heap.
+Post-processing to create mem_init/nios_sys_onchip_memory2_0.hex...
+bash -c 'elf2hex aca_hello.elf 0x02004000 0x020068ff --width=32 \
+		--little-endian-mem --create-lanes=0  mem_init/nios_sys_onchip_memory2_0.hex'
+Post-processing to create mem_init/hdl_sim/nios_sys_onchip_memory2_0.dat...
+bash -c 'elf2dat --infile=aca_hello.elf --outfile=mem_init/hdl_sim/nios_sys_onchip_memory2_0.dat \
+		--base=0x02004000 --end=0x020068ff --width=32 \
+		--little-endian-mem --create-lanes=0 '
+Post-processing to create mem_init/hdl_sim/sdram_controller.dat...
+bash -c 'elf2dat --infile=aca_hello.elf --outfile=mem_init/hdl_sim/sdram_controller.dat \
+		--base=0x00000000 --end=0x01ffffff --width=32 \
+		--little-endian-mem --create-lanes=0 '
+Post-processing to create mem_init/hdl_sim/nios_sys_onchip_memory2_0.sym...
+nios2-elf-nm -n aca_hello.elf > mem_init/hdl_sim/nios_sys_onchip_memory2_0.sym
+Post-processing to create mem_init/hdl_sim/sdram_controller.sym...
+nios2-elf-nm -n aca_hello.elf > mem_init/hdl_sim/sdram_controller.sym
+
+**** Build Finished ****

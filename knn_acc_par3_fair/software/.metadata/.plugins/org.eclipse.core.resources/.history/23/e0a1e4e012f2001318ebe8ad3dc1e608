@@ -1,0 +1,511 @@
+/*
+ * hello.c
+ *
+ *  Created on: 7 mai 2012
+ *      Author: mpbraend
+ */
+
+#include "stdio.h"
+#include "system.h"
+#ifndef NULL
+#define NULL   ((void *) 0)
+#endif
+
+#include <string.h>
+#include "altera_avalon_pio_regs.h"
+#include <unistd.h>
+#include "altera_avalon_performance_counter.h"
+#include "altera_avalon_dma.h"
+#include "fx2.h"
+#include <sys/alt_dma.h>
+#define ACK 0xAA55
+ #define FLUSH_COMM 0x0101
+void recv_short(alt_u16* buffer, alt_u8 len)
+{
+	alt_u8 i = 0;
+	while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+	IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0002);
+	for (i = 0; i<len;i++)
+	{
+		IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0002);
+		while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+		buffer[i] = IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0000);
+	}
+}
+void send_short(alt_u16 data)
+{
+	IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0003);
+	while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+	IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0000,(unsigned int) data);
+	IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0001);
+	IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0005);
+	return;
+}
+
+static volatile int txrx_done = 0;
+static void txrxDone(void * handle, void * data)
+{
+    txrx_done = 1;
+}
+int main()
+{
+	alt_u16 command[3];
+	alt_u32 tr_size;
+	while(1)
+	{
+	command[0] = 0;
+	//while(!command[0])
+	{
+		//printf("wait command \n");
+		alt_u16 read = 0;
+		alt_u16 read1 = 0;
+		alt_u16 read2 = 0;
+		recv_short(command, 3)
+		/*while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+				IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0002);
+			IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0002);
+					while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+					read = IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0000);
+
+					IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0002);
+										while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+										read1 = IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0000);
+
+										IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0002);
+															while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+															read2 = IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0000);*/
+
+
+					//write
+
+					IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0003);
+					while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+					IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0000,(unsigned int) command[0]);
+					IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0001);
+
+					IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0003);
+										while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+										IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0000,(unsigned int) command[1]);
+										IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0001);
+
+										IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0003);
+															while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+															IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0000,(unsigned int) command[2]);
+															IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0001);
+
+					IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0005);
+		//printf("rec %d \n", read);
+		//printf("wait command \n");
+
+				/*while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+				IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0002);
+				IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0002);
+				while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+				read = IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0000);
+				printf("rec %d \n", read);
+				printf("wait command \n");
+
+						while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+						IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0002);
+						IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0002);
+						while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+						read = IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0000);
+						printf("rec %d \n", read);*/
+		//recv_short(command,2);
+		//printf("wait command %d %d %d \n", command[0],command[1], command[2]);
+	}
+	// send back the ack
+//	send_short(ACK);
+
+	/*if(command[0] == FLUSH_COMM)
+	{
+		tr_size = 0;
+		tr_size = command[1];
+		send_short(tr_size);
+		tr_size = tr_size<<16;
+		tr_size = tr_size || command[2];
+		send_short(tr_size);
+		printf("send answer \n");
+	}
+	printf("tr_size %d \n",tr_size);*/
+	}
+	int i = 1;
+	fx2_struct usb_fx;
+	unsigned char ledvalue = 1;
+	long int addr = 0;
+	alt_u16 read = 0;
+	alt_u64 count = 0;
+	alt_u16 count_usb = 0;
+	alt_dma_txchan txchan;
+    alt_dma_rxchan rxchan;
+    int empty0 = 0;
+	int empty1 = 0;
+	int endmem0 = 0;
+	int endmem1 = 0;
+
+
+
+    // set the number of dimension MAX = 256 in that case 5
+	IOWR_32DIRECT(BASEQADDR_0_BASE,0x00,0x00000200);
+
+    IOWR_32DIRECT(NDIMREG_BASE,0x00,5);
+    // number of training val in each mem
+    IOWR_32DIRECT(NTRREG_0_BASE,0x00,3);
+    IOWR_32DIRECT(NTRREG_1_BASE,0x00,3);
+    // k val
+    IOWR_32DIRECT(KVALREG_BASE,0x00,3);
+	IOWR_32DIRECT(ENDTSETREG_0_BASE,0x00,0);
+	IOWR_32DIRECT(ENDTSETREG_1_BASE,0x00,0);
+
+
+    IOWR_32DIRECT(FULLREG_0_BASE,0x00,0x00000000);
+    IOWR_32DIRECT(FULLREG_1_BASE,0x00,0x00000000);
+
+    IOWR_32DIRECT(STARTCLREG_BASE, 0x00,0x00000000);
+
+    // cache 0 content
+   /* IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr,      0x00000000); //class
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x04, 0x0070BC40);
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x08, 0x0000E00B);
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x0C, 0x00000001);//class
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x10, 0x00703404);
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x14, 0x00007C25);
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x18, 0x00000000); //class * 00A8
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x1C, 0x0070E002);
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x20, 0x0000600E);
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x24, 0x00000001);//class
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x28, 0x03F04821);
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x2C, 0x0000CC15);
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x30, 0x00000000);//class
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x34, 0x01D07809);
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x38, 0x00007C23);
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x3C, 0x00000001);//class
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x40, 0x02B0E03A);
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x44, 0x0000780D);
+
+    addr = 0x0048;
+
+    //cache 1 content
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr,      0x00000000); //class --* 0131
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x04, 0x00108420);
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x08, 0x0000CC03);
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x0C, 0x00000000);//class
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x10, 0x03409006);
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x14, 0x00009407);
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x18, 0x00000001); //class --* 010D
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x1C, 0x03E0A02F);
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x20, 0x0000F403);
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x24, 0x00000000);//class
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x28, 0x03804821);
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x2C, 0x0000CC15);
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x30, 0x00000001); //class
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x34, 0x03D0AC03);
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x38, 0x0000301D);
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x3C, 0x00000001);//class
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x40, 0x02B0E03A);
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x44, 0x0000780D);
+	addr = 0x0090;*/
+
+	// Query
+
+
+
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr,      0x01B0680B); //class
+	IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x04, 0x0000E826);
+
+	IOWR_32DIRECT(STARTCLREG_BASE, 0x00,0x00000001);
+    long int rd = IORD_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x44);
+    printf("LSByte %d \n", rd & 0xFFFF);
+    rd = rd>>16;
+    printf("2 Byte %d \n", rd & 0xFFFF);
+
+
+    //IOWR_32DIRECT(STARTCLREG_BASE, 0x00,0x00000000); // se la tolgo va
+
+    /*IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr,0x00000002);
+    IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+4,0x00402C2E);
+    		IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+8,0x00406828);
+    		IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x0C,0x00406C39);
+    		IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x10,0x00409815);
+    		IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x14,0x0040E80D);*/
+
+    void* tx_data = (void*)SDRAM_CONTROLLER_BASE; /* pointer to data to send */
+    void* rx_buffer = (void*)(SDRAM_CONTROLLER_BASE+0x10); /* pointer to rx buffer */
+
+	//printf("Hello\n");
+	//int k = 0;
+	//initialize the SDRAM
+	PERF_RESET(PERFORMANCE_COUNTER_0_BASE);
+	PERF_START_MEASURING(PERFORMANCE_COUNTER_0_BASE);
+
+	//for (addr=0;addr<33554432;addr+=0x14)
+		//
+	//{
+		/*IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr,0x00000002);
+		IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+4,0x00402C2E);
+		IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+8,0x00406828);
+		IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x0C,0x00406C39);
+		IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x10,0x00409815);
+		IOWR_32DIRECT(SDRAM_CONTROLLER_BASE,addr+0x14,0x0040E80D);*/
+
+//}
+	txchan = alt_dma_txchan_open("/dev/dma");
+	rxchan = alt_dma_rxchan_open("/dev/dma");
+	alt_dma_txchan_ioctl(txchan, ALT_DMA_SET_MODE_32, NULL);
+	alt_dma_rxchan_ioctl(rxchan, ALT_DMA_SET_MODE_32, NULL);
+	txrx_done = 0;
+	tx_data = (void*)(SDRAM_CONTROLLER_BASE+0x0090); /* pointer to data to send */
+	rx_buffer = (void*)(DMA_WRITE_MASTER_CACHE_0_BASE+0x0200);//CUSTOM_RAM_0_BASE
+	printf("Write Q0\n");
+	alt_dma_txchan_send (txchan,tx_data,0x0008,NULL,NULL);
+	alt_dma_rxchan_prepare (rxchan,rx_buffer,0x0008, txrxDone,NULL);
+	while (!txrx_done);
+	alt_dma_txchan_close(txchan);
+	alt_dma_rxchan_close(rxchan);
+
+
+	txchan = alt_dma_txchan_open("/dev/dma");
+	rxchan = alt_dma_rxchan_open("/dev/dma");
+	alt_dma_txchan_ioctl(txchan, ALT_DMA_SET_MODE_32, NULL);
+	alt_dma_rxchan_ioctl(rxchan, ALT_DMA_SET_MODE_32, NULL);
+	txrx_done = 0;
+	tx_data = (void*)(SDRAM_CONTROLLER_BASE+0x0090); /* pointer to data to send */
+	rx_buffer = (void*)(DMA_WRITE_MASTER_CACHE_1_BASE+0x0200);//CUSTOM_RAM_0_BASE
+	printf("Write Q1\n");
+	alt_dma_txchan_send (txchan,tx_data,0x0008,NULL,NULL);
+	alt_dma_rxchan_prepare (rxchan,rx_buffer,0x0008, txrxDone,NULL);
+	while (!txrx_done);
+	alt_dma_txchan_close(txchan);
+	alt_dma_rxchan_close(rxchan);
+
+	//1 ->  0x00420040
+	//addr = 0;
+
+	//for (addr=0;addr<4096;addr+=4)
+	//	IOWR_32DIRECT(CUSTOM_RAM_0_BASE,addr,addr);
+
+	IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, ledvalue);
+	//txchan = alt_dma_txchan_open("/dev/dma_0");
+	//rxchan = alt_dma_rxchan_open("/dev/dma_0");
+
+	//for (addr=0;addr<33554432;addr+=4)
+	//for (addr=0;addr<8388592;addr+=0x10)
+	//{
+			 endmem0 = 0;
+			 endmem1 = 0;
+		IOWR_32DIRECT(STARTCLREG_BASE,0x00,1); //modificato qui
+		usleep(200); //da provare a togliere
+	   	//fill cache 0
+		empty0 = IORD_32DIRECT(EMPTYREG_0_BASE,0x00);
+		empty1 = IORD_32DIRECT(EMPTYREG_1_BASE,0x00);
+		if(empty0) // && !endmem0
+		{
+		IOWR_32DIRECT(FULLREG_0_BASE,0x00,0x00000000);
+		IOWR_32DIRECT(NTRREG_0_BASE, 0x00,0x00000003);
+		IOWR_32DIRECT(ENDTSETREG_0_BASE,0x00,0); //era 1
+		txchan = alt_dma_txchan_open("/dev/dma");
+		rxchan = alt_dma_rxchan_open("/dev/dma");
+		alt_dma_txchan_ioctl(txchan, ALT_DMA_SET_MODE_32, NULL);
+		alt_dma_rxchan_ioctl(rxchan, ALT_DMA_SET_MODE_32, NULL);
+		txrx_done = 0;
+		tx_data = (void*)(SDRAM_CONTROLLER_BASE); /* pointer to data to send */
+		rx_buffer = (void*)(DMA_WRITE_MASTER_CACHE_0_BASE);//CUSTOM_RAM_0_BASE
+		printf("Write in Cache 0\n");
+		PERF_BEGIN(PERFORMANCE_COUNTER_0_BASE,1);
+		alt_dma_txchan_send (txchan,tx_data,0x0024,NULL,NULL);
+		alt_dma_rxchan_prepare (rxchan,rx_buffer,0x0024, txrxDone,NULL);
+		while (!txrx_done);
+		PERF_END(PERFORMANCE_COUNTER_0_BASE,1);
+		alt_dma_txchan_close(txchan);
+		alt_dma_rxchan_close(rxchan);
+		//alt_dma_txchan_close(txchan);
+		//alt_dma_rxchan_close(rxchan);
+		IOWR_32DIRECT(FULLREG_0_BASE,0x00,0x00000001);
+		//IOWR_32DIRECT(FULLREG_0_BASE,0x00,0x00000001);
+		//start classification
+		//IOWR_32DIRECT(STARTCLREG_BASE, 0x00,0x00000000);
+		}
+		empty0 = IORD_32DIRECT(EMPTYREG_0_BASE,0x00);
+		empty1 = IORD_32DIRECT(EMPTYREG_1_BASE,0x00);
+		if(empty1) // && !endmem0
+		{
+		//fill cache 1
+		IOWR_32DIRECT(FULLREG_1_BASE,0x00,0x00000000);
+
+		IOWR_32DIRECT(NTRREG_1_BASE, 0x00,0x00000003);
+		IOWR_32DIRECT(ENDTSETREG_1_BASE,0x00,0);//provare a metterli vicino al full
+		txrx_done = 0;
+		txchan = alt_dma_txchan_open("/dev/dma");
+		rxchan = alt_dma_rxchan_open("/dev/dma");
+		tx_data = (void*)(SDRAM_CONTROLLER_BASE+0x0024); /* pointer to data to send */
+		rx_buffer = (void*)(DMA_WRITE_MASTER_CACHE_1_BASE);//CUSTOM_RAM_0_BASE
+		printf("Write in Cache 1\n");
+		alt_dma_txchan_send (txchan,tx_data,0x0024,NULL,NULL);
+		alt_dma_rxchan_prepare (rxchan,rx_buffer,0x0024, txrxDone,NULL);
+		// stop the flag
+		//IOWR_32DIRECT(STARTCLREG_BASE, 0x00,0x00000000);
+		while (!txrx_done);
+		PERF_END(PERFORMANCE_COUNTER_0_BASE,1);
+		alt_dma_txchan_close(txchan);
+		alt_dma_rxchan_close(rxchan);
+
+
+		IOWR_32DIRECT(FULLREG_1_BASE,0x00,0x00000001);
+		}
+		while(!endmem0 || !endmem1)
+		{
+			printf("loop\n");
+			empty0 = IORD_32DIRECT(EMPTYREG_0_BASE,0x00);
+			empty1 = IORD_32DIRECT(EMPTYREG_1_BASE,0x00);
+
+			if(empty1 && !endmem1) // && 0
+			{
+				endmem1 = 1;
+				IOWR_32DIRECT(FULLREG_1_BASE,0x00,0x00000000);
+				IOWR_32DIRECT(NTRREG_1_BASE, 0x00,0x00000003);
+				IOWR_32DIRECT(ENDTSETREG_1_BASE,0x00,1);//provare a metterli vicino al full
+				txrx_done = 0;
+				txchan = alt_dma_txchan_open("/dev/dma");
+				rxchan = alt_dma_rxchan_open("/dev/dma");
+				tx_data = (void*)(SDRAM_CONTROLLER_BASE+0x0048); /* pointer to data to send */
+				rx_buffer = (void*)(DMA_WRITE_MASTER_CACHE_1_BASE);//CUSTOM_RAM_0_BASE
+				printf("Write in Cache 1_1\n");
+				alt_dma_txchan_send (txchan,tx_data,0x0024,NULL,NULL);
+				alt_dma_rxchan_prepare (rxchan,rx_buffer,0x0024, txrxDone,NULL);
+				// stop the flag
+				//IOWR_32DIRECT(STARTCLREG_BASE, 0x00,0x00000000);
+				while (!txrx_done);
+				PERF_END(PERFORMANCE_COUNTER_0_BASE,1);
+				alt_dma_txchan_close(txchan);
+				alt_dma_rxchan_close(rxchan);
+				IOWR_32DIRECT(FULLREG_1_BASE,0x00,0x00000001);
+			}
+			if(empty0 && !endmem0) //
+			{
+				endmem0 = 1;
+				//endmem1 = 1;
+				IOWR_32DIRECT(FULLREG_0_BASE,0x00,0x00000000);
+
+				IOWR_32DIRECT(NTRREG_0_BASE, 0x00,0x00000003);
+				IOWR_32DIRECT(ENDTSETREG_0_BASE,0x00,1);
+				txchan = alt_dma_txchan_open("/dev/dma");
+				rxchan = alt_dma_rxchan_open("/dev/dma");
+				alt_dma_txchan_ioctl(txchan, ALT_DMA_SET_MODE_32, NULL);
+				alt_dma_rxchan_ioctl(rxchan, ALT_DMA_SET_MODE_32, NULL);
+				txrx_done = 0;
+				tx_data = (void*)(SDRAM_CONTROLLER_BASE+0x006C); /* pointer to data to send */
+				rx_buffer = (void*)(DMA_WRITE_MASTER_CACHE_0_BASE);//CUSTOM_RAM_0_BASE
+				printf("Write in Cache 0_1\n");
+				PERF_BEGIN(PERFORMANCE_COUNTER_0_BASE,1);
+				alt_dma_txchan_send (txchan,tx_data,0x0024,NULL,NULL);
+				alt_dma_rxchan_prepare (rxchan,rx_buffer,0x0024, txrxDone,NULL);
+				while (!txrx_done);
+				PERF_END(PERFORMANCE_COUNTER_0_BASE,1);
+				alt_dma_txchan_close(txchan);
+				alt_dma_rxchan_close(rxchan);
+				IOWR_32DIRECT(FULLREG_0_BASE,0x00,1);
+				int fr = IORD(FULLREG_0_BASE,0x00);
+				printf("Write in Cache 0_1 done %d\n",fr);
+			}
+		}
+
+		//IOWR_32DIRECT(STARTCLREG_BASE, 0x00,0x00000001);
+
+		printf("fuori\n");
+		//IOWR_32DIRECT(FULLREG_0_BASE,0x00,0x00000001);
+		//IOWR_32DIRECT(FULLREG_1_BASE,0x00,0x00000001);
+		//IOWR_32DIRECT(FULLREG_0_BASE,0x00,0x00000000);
+		//IOWR_32DIRECT(FULLREG_1_BASE,0x00,0x00000000);
+		//IOWR_32DIRECT(STARTCLREG_BASE,0x00,0); //modificato qui
+		int end_class = 0;
+		//IOWR_32DIRECT(STARTCLREG_BASE,0x00,1); //modificato qui
+
+		while (!end_class)
+		{
+			 end_class = IORD_32DIRECT(ENDCLASSREG_0_BASE,0x00);
+			 IOWR_32DIRECT(FULLREG_1_BASE,0x00,0x00000001);
+				IOWR_32DIRECT(FULLREG_0_BASE,0x00,1);
+		}
+		int class =  IORD_32DIRECT(CLOUTREG_0_BASE,0x00);
+		int vote =  IORD_32DIRECT(NVOTREG_0_BASE,0x00);
+		printf("Class: %d \n", class);
+		printf("Vote: %d \n", vote);
+		//IOWR_32DIRECT(STARTCLREG_BASE,0x00,0); //modificato qui
+
+/* commento da qui
+		txchan = alt_dma_txchan_open("/dev/dma_0");
+		rxchan = alt_dma_rxchan_open("/dev/dma_0");
+		txrx_done = 0;
+		tx_data = (void*)(SDRAM_CONTROLLER_BASE+0x20); /* pointer to data to send */
+		/*rx_buffer = (void*)(SDRAM_CONTROLLER_BASE+addr+0x40);
+		alt_dma_txchan_send (txchan,tx_data,0x20,NULL,NULL);
+		alt_dma_rxchan_prepare (rxchan,rx_buffer,0x20, txrxDone,NULL);
+		while (!txrx_done);
+		alt_dma_txchan_close(txchan);
+		alt_dma_rxchan_close(rxchan);*/
+	//}
+	//for (addr=0;addr<33554432;addr+=4)
+	//		read = IORD_32DIRECT(SDRAM_CONTROLLER_BASE,addr);
+
+		while (1)
+			{
+
+	count = perf_get_section_time(PERFORMANCE_COUNTER_0_BASE,1);
+	ledvalue++;
+	IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, ledvalue);
+
+		//if (i % 50 == 0)
+		printf("LSByte %d \n", count & 0xFFFF);
+		count = count>>16;
+		printf("2 Byte %d \n", count & 0xFFFF);
+		count = count>>16;
+		printf("3 Byte %d \n", count & 0xFFFF);
+		count = count>>16;
+		printf("Last Byte %d \n", count & 0xFFFF);
+
+
+		// Set the LED output
+		ledvalue =  i;
+		IOWR_ALTERA_AVALON_PIO_DATA(PIO_0_BASE, ledvalue);
+		/*while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+		IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0003);
+		//IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0000,(unsigned int) 0xF2F2);
+		for(k=0;k<256;k++)
+		{
+			count_usb = count & 0xFFFF;
+			//IOWR_32DIRECT(SDRAM_CONTROLLER_BASE, 0X000000,17);
+			//IOWR_32DIRECT(SDRAM_CONTROLLER_BASE, 0X000004,18);
+			while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+			IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0002);
+			IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0002);
+			while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+			//read = IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0000);
+			read = IORD_32DIRECT(SDRAM_CONTROLLER_BASE, addr);
+
+			//write
+
+			IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0006,0x0003);
+			while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+			IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0000,(unsigned int) count);
+			IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0001);
+			//IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0000,(unsigned int) 1);
+			//IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0001);
+			//IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0008,0x0003);
+			addr+=4;
+			count = count>>16;
+			usleep(10);
+		}
+
+	//	while(IORD_16DIRECT(USBFIFOCTRL_0_BASE,0x0002)& 0x0001);
+		//IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0000,(unsigned int) 0x1234);
+	//	IOWR_16DIRECT(USBFIFOCTRL_0_BASE,0x0004,(unsigned int) 0x0005);
+
+		//fx2_write(&usb_fx, (int)FX2_EP4, (int) 0xFF);
+		//IOWR_ALTERA_AVALON_PIO_DATA(USBFIFOCTRL_0_BASE,usb_fx.data);
+		i++; togliere qui */
+
+		usleep(100);
+	}
+
+	return 0;
+}
