@@ -1,3 +1,0 @@
-v1
-DSP_BALANCING_IMPLEMENTATION,DSP_BLOCKS,distancecore:distancecore_0|EucDis:c_1|TwoPower:TwoPowerBlk|lpm_mult:Mult0|mult_31t:auto_generated|mac_out2,
-DSP_BALANCING_IMPLEMENTATION,DSP_BLOCKS,distancecore:distancecore_1|EucDis:c_1|TwoPower:TwoPowerBlk|lpm_mult:Mult0|mult_31t:auto_generated|mac_out2,

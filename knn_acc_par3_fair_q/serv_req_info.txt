@@ -1,8 +1,0 @@
-<internal_error>
-	<executable>quartus.exe</executable>
-	<sub_system>MEM</sub_system>
-	<error>*** Fatal Error: Out of memory in module quartus.exe (4107 megabytes used) while running 32-bit Quartus II on a 64-bit Operating System platform. Use the 64-bit Quartus II to increase memory capacity.</error>
-	<date>Tue Jul 08 00:15:06 2014</date>
-	<version>Version 12.1 Build 177 11/07/2012 SJ Web Edition</version>
-</internal_error>
-
