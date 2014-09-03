@@ -30,8 +30,9 @@ void logerror(const char *format, ...)
     vfprintf(stderr, format, ap);
     va_end(ap);
 };
-
-usb_dev_handle *get_usb_device() {
+//function to get the FPGA4U connected to the PC
+usb_dev_handle *get_usb_device() 
+{
 	struct usb_bus *bus;
 	struct usb_device *dev;
 	struct usb_device *devlist[DEV_LIST_MAX];
@@ -65,7 +66,7 @@ usb_dev_handle *get_usb_device() {
 	dev_h = usb_open(devlist[sel]);
 	return dev_h;
 }
-
+//function for the bulk write of byte_num byte in the USB port
 int send_to_usb(usb_dev_handle	*device, unsigned short *buffer, int byte_num)
 {
 	int w = usb_bulk_write(device, 6, (char*)buffer, byte_num, USB_TIMEOUT);
@@ -76,7 +77,7 @@ int send_to_usb(usb_dev_handle	*device, unsigned short *buffer, int byte_num)
 	}
 	return w;
 }
-
+//function for the bulk read of the ACK from the USB port
 int recv_ack(usb_dev_handle	*device, unsigned short *buffer, int byte_num)
 {
 	int r = usb_bulk_read(device, 0x88, (char*)buffer, byte_num, USB_TIMEOUT);
@@ -85,10 +86,9 @@ int recv_ack(usb_dev_handle	*device, unsigned short *buffer, int byte_num)
 		printf("Error on read : %s\n", usb_strerror());
 		exit(1);
 	}
-	//printf("ack %d\n",buffer[2]);
 	return r;
 }
-
+//function for the bulk read of byte_num byte from the USB port
 void recv_from_usb(usb_dev_handle *device, unsigned short *buffer, int byte_num)
 {
 	int r = usb_bulk_read(device, 0x88, (char*)buffer, byte_num, 3000);
@@ -99,11 +99,10 @@ void recv_from_usb(usb_dev_handle *device, unsigned short *buffer, int byte_num)
 	}
 	return;
 }
-
+//function to send the vector to classify the data are read from a file created by matlab
 void classifier(usb_dev_handle* device,unsigned int size, unsigned int window)
 {
 	FILE * pFile;
-	//int size;
     int r;
 	pFile = fopen ("query.dat","r");
 	if (pFile==NULL)
@@ -116,42 +115,29 @@ void classifier(usb_dev_handle* device,unsigned int size, unsigned int window)
 		int i = 0;
 		int hexval;
 		unsigned short shortval;
-		unsigned short tab[512];//da segare
 		unsigned short command[256];
-		//fseek(pFile, 0, SEEK_END); // seek to end of file
-		//size = ftell(pFile); // get current file pointer
-		fseek(pFile, size*9, SEEK_SET); // seek back to beginning of file
-      //  printf("size %d\n",size);
-		//size = (size+1)/9;
-      //  printf("size %d\n",size);
+		fseek(pFile, size*9, SEEK_SET); // set the position in the file
 		for (i = 0; i < window; i++)
 		{
 			fscanf(pFile,"%x",&hexval);
-			//printf("hex %x \n",hexval);
 			shortval = hexval>>16;
-			//printf("short %x \n",shortval);
 			//most significant part
 			command[2*i] = shortval;
 			//least significant part
 			shortval = hexval;
-			//printf("short %x \n",shortval);
 			command[1+2*i] = shortval;
 		}
 		send_to_usb(device,command, 512);
-		r = usb_bulk_read(device, 0x88, (char*)tab, 512, 1000);
-		if(r < 0 ) //|| tab[0]!=ACK
+		r = usb_bulk_read(device, 0x88, (char*)command, 512, 1000);
+		if(r < 0 )
 		{
 			printf("Error on read : %s\n", usb_strerror());
 		}
-		/*for (i = 0; i<8 ; i++)
-		{
-			printf("read %x \n",tab[i]);
-		}*/
 		fclose(pFile);
 	}
 }
 
-
+//function for the initialization of the USB port
 void init_usb(usb_dev_handle *device)
 {
 	if (device == NULL) exit(1);
@@ -168,7 +154,7 @@ void init_usb(usb_dev_handle *device)
 	}
 	return;
 }
-
+//function to close the USB port
 void close_usb(usb_dev_handle *device)
 {
 	usb_reset(device);
@@ -176,10 +162,10 @@ void close_usb(usb_dev_handle *device)
     usb_close(device);
 	return;
 }
-
+//mexFunction for matlab
 void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[]) 
 {
-unsigned short command[256];
+	unsigned short command[256];
 	unsigned short tab[512];
     unsigned int q_row = 0;
 	unsigned long long int perf_count = 0;
@@ -188,7 +174,7 @@ unsigned short command[256];
 	float base_addr = 0.0;
 	float n_dim = 0.0;
     unsigned int tb_size;
-	float n_tr = 0.0; // da mettere automatico
+	float n_tr = 0.0;
 	unsigned int dim_1 = 0;
 	unsigned int dim_last = 0;
 	unsigned int n_load = 0;
@@ -201,19 +187,23 @@ unsigned short command[256];
 	int w;
 	int r;
 	usb_dev_handle	*device;
+	//read the values from matlab
     n_dim = (float)mxGetScalar(prhs[0]);
     n_tr = (float)mxGetScalar(prhs[1]);
     q_row = (unsigned int)mxGetScalar(prhs[2]);
-    tb_size = (unsigned int )mxGetScalar(prhs[3]);
-    kval = (unsigned short )mxGetScalar(prhs[4]);
-    parallelism = (unsigned short )mxGetScalar(prhs[5]);
-    memword =  (unsigned int )mxGetScalar(prhs[6]);
+    tb_size = (unsigned int)mxGetScalar(prhs[3]);
+    kval = (unsigned short)mxGetScalar(prhs[4]);
+    parallelism = (unsigned short)mxGetScalar(prhs[5]);
+    memword =  (unsigned int)mxGetScalar(prhs[6]);
+	//number of row of memory used for the query data
 	n_loc = (ceil(n_dim/3)+1);
+	//start address of the query data
 	base_addr = (memword -(n_loc-1))*4;
-	//printf("Mem Location for 1 sample %d \n",(short)(n_loc));
-	//printf("Base Q addr in cache %d \n",(short)(base_addr));
+	//check how many memory transfers are needed
 	if(n_loc*n_tr <= base_addr*parallelism/4)
 	{
+		//the dimension of the first parallelism-1 block is the same and equal to dim_1 while the last is dim_last
+		//in this case only parallelism transfer are needed
 		dim_1 = ceil(n_loc*n_tr/parallelism);
 		printf("standard dim %d \n",dim_1);
 		dim_1 = dim_1 - (dim_1% (int)n_loc);
@@ -221,9 +211,6 @@ unsigned short command[256];
 		dim_1 = 4*dim_1;
 		printf("standard dim %d \n",dim_1);
 		n_load = parallelism;
-		//if((int)((int)(n_loc*n_tr*4) % (int)dim_1)!=0)
-		//	dim_last = (int)((int)(n_loc*n_tr*4) % (int)dim_1);
-		//else
 		if((n_loc*n_tr*4-dim_1*(parallelism-1)) != 0)
 			dim_last = n_loc*n_tr*4-dim_1*(parallelism-1);
 		else
@@ -231,9 +218,8 @@ unsigned short command[256];
 	}
 	else
 	{
+		//more transfer are needed
 		dim_1 =  ((int)n_loc*4)*floor((int) base_addr/((int)n_loc*4));
-		//printf("standard dim %d \n",dim_1);
-		//dim_1 = floor(base_addr/n_loc)*4;
 		n_load = ceil(n_loc*n_tr*4/(int)dim_1);
 		if((int)((int)(n_loc*n_tr*4) % (int)dim_1) != 0)
 			dim_last = (int)((int)(n_loc*n_tr*4) % (int)dim_1);
@@ -249,12 +235,11 @@ unsigned short command[256];
 	printf("Number of load in cache %d \n",(short)(n_load));
 	printf("Dimension of the last transfer in cache %d \n",(short)(dim_last));
     printf("qsize %d\n",q_row);
-//	
 	device = get_usb_device();
     init_usb(device);
-
-	//send class command
-     plhs[0] = mxCreateNumericMatrix(23, tb_size, mxUINT16_CLASS, mxREAL);
+	//matrix for the result received from the FPGA
+    plhs[0] = mxCreateNumericMatrix(23, tb_size, mxUINT16_CLASS, mxREAL);
+	//loop to transfer each query vector and receive the result of the classification
     for(i = 0; i < tb_size;i++)
     {
         command[0] = CLASS_CMD;
@@ -272,35 +257,22 @@ unsigned short command[256];
         r = recv_ack(device,tab, 6);
         printf("Send Class Command\n");
         classifier(device,i*q_row,q_row);
-       recv_from_usb(device,tab,46);
-        //printf("Read: %d bytes\n", r);
-        /*for(i = 0; i < 23; i++)
-        {
-        	printf("Read %d: %x \n",i, tab[i]);
-        }
-        printf("Class %d \n", tab[0]);
-        printf("Vote %d \n", tab[1]);*/
-        //r = recv_ack(device,tab, 4);
+        recv_from_usb(device,tab,46);
         perf_count = 0;
         perf_count = tab[5];
-        //printf("Read: %I64u bytes\n", perf_count);
         perf_count = perf_count << 16;
         perf_count = perf_count | tab[4];
-        //printf("Read: %I64u bytes\n", perf_count);
         perf_count = perf_count << 16;
         perf_count = perf_count | tab[3];
-        //printf("Read: %I64u bytes\n", perf_count);
         perf_count = perf_count << 16;
         perf_count = perf_count | tab[2];
         time = perf_count/(144);
-        //printf("Elapsed time %I64u us\n", time);
-       
         data = mxGetData(plhs[0]);
+		//store the answer
         for(j = 0;j<23;j++)
         {   
             data[23*i+j] = tab[j];
         }
     }
 	close_usb(device);
-
 }

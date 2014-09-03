@@ -30,7 +30,7 @@ void logerror(const char *format, ...)
     vfprintf(stderr, format, ap);
     va_end(ap);
 };
-
+//function to get the FPGA4U connected to the PC
 usb_dev_handle *get_usb_device() 
 {
 	struct usb_bus *bus;
@@ -66,7 +66,7 @@ usb_dev_handle *get_usb_device()
 	dev_h = usb_open(devlist[sel]);
 	return dev_h;
 }
-
+//function for the bulk write of byte_num byte in the USB port
 int send_to_usb(usb_dev_handle	*device, unsigned short *buffer, int byte_num)
 {
 	int w = usb_bulk_write(device, 6, (char*)buffer, byte_num, USB_TIMEOUT);
@@ -77,7 +77,7 @@ int send_to_usb(usb_dev_handle	*device, unsigned short *buffer, int byte_num)
 	}
 	return w;
 }
-
+//function for the bulk read of the ACK from the USB port
 int recv_ack(usb_dev_handle	*device, unsigned short *buffer, int byte_num)
 {
 	int r = usb_bulk_read(device, 0x88, (char*)buffer, byte_num, USB_TIMEOUT);
@@ -88,7 +88,7 @@ int recv_ack(usb_dev_handle	*device, unsigned short *buffer, int byte_num)
 	}
 	return r;
 }
-
+//function to transfer the training set to the FPGA
 void transfer_data(usb_dev_handle*device, unsigned int base_addr)
 {
 	FILE * pFile;
@@ -105,18 +105,19 @@ void transfer_data(usb_dev_handle*device, unsigned int base_addr)
 		int i = 0;
 		int hexval;
 		unsigned short shortval;
-		unsigned short tab[512];//da segare
 		unsigned short command[512];
 		float packet_number = 0;
         int k = 0;
 		int fdim = 0;
         int r = 0;
+		//get the dimension of the file
 		fseek(pFile, 0, SEEK_END); // seek to end of file
 		size = ftell(pFile); // get current file pointer
 		fseek(pFile, 0, SEEK_SET); // seek back to beginning of file
         printf("size %f\n",size);
 		size = (size+1)/9;
-		  printf("size %f\n",size);
+		printf("size %f\n",size);
+		//compute the number of packet needed to transfer all the data since aech transfer can be at most of 512 bytes
 		if (2*size < 254)
 			packet_number = 1;
 		else
@@ -135,34 +136,30 @@ void transfer_data(usb_dev_handle*device, unsigned int base_addr)
 		command[4] = shortval; 
 		command[5] = base_addr; 
 		w = send_to_usb(device,command,16);
-		r = recv_ack(device,tab, 6);
+		r = recv_ack(device,command, 6);
         printf("Send Command\n");
 		printf("Send %d Packet With Data\n", (int)packet_number);
-		//number of packet to be updated
+		//number of packet to be updated at each iteration
 		shortval = (int)(packet_number)>>16;
 		command[0] = shortval;
 		shortval = (int)(packet_number);
 		command[1] = shortval;
-		
+		//send all the data
 		for (k = 0; k < (int)packet_number; k++)
 		{
 			for (i = 0; fdim < size && i < 127; i++)
 			{
 				fscanf(pFile,"%x",&hexval);
-				//printf("hex %x \n",hexval);
 				shortval = hexval>>16;
-				//printf("short %x \n",shortval);
 				//most significant part
 				command[2+2*i] = shortval;
 				//least significant part
 				shortval = hexval;
-				//printf("short %x %d \n",shortval,3+2*i);
 				command[3+2*i] = shortval;
 				fdim++;
 			}
 			send_to_usb(device,command, 512);
-			
-			r = usb_bulk_read(device, 0x88, (char*)tab, 512, 1000);
+			r = usb_bulk_read(device, 0x88, (char*)command, 512, 1000);
 			if(r < 0 )
 			{
 				printf("Error on read : %s\n", usb_strerror());
@@ -172,7 +169,7 @@ void transfer_data(usb_dev_handle*device, unsigned int base_addr)
 	}
 	fclose(pFile);
 }
-
+//function for the bulk read of byte_num byte from the USB port
 void recv_from_usb(usb_dev_handle *device, unsigned short *buffer, int byte_num)
 {
 	int r = usb_bulk_read(device, 0x88, (char*)buffer, byte_num, 3000);
@@ -183,7 +180,7 @@ void recv_from_usb(usb_dev_handle *device, unsigned short *buffer, int byte_num)
 	}
 	return;
 }
-
+//function for the initialization of the USB port
 void init_usb(usb_dev_handle *device)
 {
 	if (device == NULL) exit(1);
@@ -200,7 +197,7 @@ void init_usb(usb_dev_handle *device)
 	}
 	return;
 }
-
+//function to close the USB port
 void close_usb(usb_dev_handle *device)
 {
 	usb_reset(device);
@@ -208,7 +205,7 @@ void close_usb(usb_dev_handle *device)
     usb_close(device);
 	return;
 }
-
+//mexFunction for matlab
 void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[]) 
 {
 	unsigned short command[256];
@@ -217,8 +214,10 @@ void mexFunction(int nlhs, mxArray *plhs[],int nrhs, const mxArray *prhs[])
 	float n_dim = 0.0;
     unsigned int memword = 0;
     usb_dev_handle	*device;
+	//read the values from matlab
     n_dim = (float)mxGetScalar(prhs[0]);
     memword = (float)mxGetScalar(prhs[1]);
+	//compute the memory location needed for each training vector
 	n_loc = (ceil(n_dim/3)+1);
 	base_addr = (memword -(n_loc-1))*4;
 	device = get_usb_device();
